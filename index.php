@@ -6,6 +6,8 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link href='https://unpkg.com/boxicons@2.1.2/css/boxicons.min.css' rel='stylesheet'>
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-1BmE4kWBq78iYhFldvKuhfTAU6auU8tT94WrHftjDbrCEXSU1oBoqyl2QvZ6jIW3" crossorigin="anonymous">
+    
     <title>REQ FORM</title>
     <style>
         * {
@@ -29,7 +31,7 @@
     <script type = "text/javascript">
         $(document).ready(function () {
 
-            var html = '<tr><td><input class = "form-control" type="text"  name = "itemdescription[]" required/></td><td><input class = "form-control" type="number"  name = "quantity[]" required/></td><td><input class = "form-control" type="number"  name = " expectedprice[]" required/></td><td><input class = "form-control" type="number"  name = "actualprice[]" /></td><td><input class = "form-control" type="text"  name = "supplier[]" /></td><td><input class = "form-control" type="text"  name = "suppliername[]" required/></td><td><input class = "form-control" type="text"  name = "approvequoteid[]" /></td><td><input class = "form-control" type="number"  name = "amount[]" required/></td><td><select name = "choice[]" class = "form-control" ><option>Approved</option><option>Rejected</option><option>Pending</option></select></td><td><input class = "btn" type = "button" name = "remove" id = "remove" value = "Remove"></td></tr>';
+            var html = '<tr><td><input class = "form-control" type="text"  name = "itemdescription[]" required/></td><td><input class = "form-control" type="number"  name = "quantity[]" required/></td><td><input class = "form-control" type="number"  name = " expectedprice[]" required/></td><td><input class = "form-control" type="number"  name = "actualprice[]" /></td><td><input class = "form-control" type="text"  name = "supplier[]" /></td><td><input class = "form-control" type="text"  name = "suppliername[]" required/></td><td><input class = "form-control" type="text"  name = "approvequoteid[]" /></td><td><input class = "form-control" type="number"  name = "amount[]" required/></td><td><select name = "choice[]" class = "form-control" disabled ><option value = " " selected>Approve Item</option><option value = "approved">Approved</option><option value = "rejected">Rejected</option><option value = "pending">Pending</option></select></td><td><input class = "btn btn-warning" type = "button" name = "remove" id = "remove" value = "Remove"></td></tr>';
 
             var x = 1;
             //to add rows
@@ -49,15 +51,14 @@
 </head>
 <body>
     <h1>REQUISITION FORM</h1>
-    <div class = "container">
+    <div>
     <form action="connector.php" method="POST" id= "insert_form" action = "">
-        <div>
+        <div id = "requisition_header">
             <label>REQUISITION NUMBER:</label><input type="text" name="Reqnumber"    /><br/>
             <label>DATE REQUESTED:</label><input type="date"  name="Reqdate"/><br/>
             <label>USER ID:</label><input type="text" name="Userid" /><br/>
             <label>DEPARTMENT:</label><input type="text" name="Department" /><br/>
             <label>REQUISITION STATUS:</label><input type="checkbox" /><br/>
-            <div>
             <label for="Approver">Approver:</label>
 
 <select name="approver" id="approver-select">
@@ -88,10 +89,10 @@
                     <th>Approve Quote_id</th>
                     <th>Amount</th>
                     <th>Status</th>
-                    <th>Add or Remove</th>
+                    <th></th>
                 </tr>
                 <tr>
-                    <td><input class = "form-control" type="text"  name = "itemdescription[]" required/></td>
+                    <td><input class = "form-control " type="text" name = "itemdescription[]" required/></td>
                     <td><input class = "form-control" type="number"  name = "quantity[]" required/></td>
                     <td><input class = "form-control" type="number"  name = " expectedprice[]" required/></td>
                     <td><input class = "form-control" type="number"  name = "actualprice[]" /></td>
@@ -100,17 +101,18 @@
                     <td><input class = "form-control" type="text"  name = "approvequoteid[]" /></td>
                     <td><input class = "form-control" type="number"  name = "amount[]" required/></td>
                     <td>
-                        <select name = "choice []" class = "form-control" >
-                        <option>Approved</option>
-                        <option>Rejected</option>
-                        <option>Pending</option>
+                        <select name = "choice[]" style ="width:124px" class = "form-control" disabled>
+                        <option value = " " selected>Approve Item</option>   
+                        <option value = "approved">Approved</option>
+                        <option value = "rejected">Rejected</option>
+                        <option value = "pending">Pending</option>
                         </select>
                     </td>
-                    <td><input class = "btn" type = "button" name = "add" id = "add" value = "Add"></td>
+                    <td><input class = "btn btn-danger" type = "button" name = "add" id = "add" value = "Add Row"></td>
                 </tr>
             </table>
             <center>
-            <input class = "btn" type = "submit" name = "save" id = "save" value = "Save Data">
+            <input class = "btn btn-success" type = "submit" name = "save" id = "save" value = "Save Data">
             </center>
         </div>
     </form>
