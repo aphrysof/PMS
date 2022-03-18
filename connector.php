@@ -1,5 +1,6 @@
 <?php
 include('config.php');
+
 $reqnumber = $_REQUEST['Reqnumber'] ?? 0;
 $reqdate =  $_REQUEST['Reqdate'] ?? 0;
 $userid = $_REQUEST['Userid'] ?? 0;
@@ -23,15 +24,23 @@ $modifiedon = $_REQUEST['modifiedon'] ?? 0;
 $sql = "INSERT INTO Requsition(ReqNumber,ReqDate,UserId,Approver,DepartmentId,CreatedOn,ModifiedOn) 
         VALUES ('$reqnumber',getdate(),'$userid','$approver','$department',getdate(), getdate())";
 
-$sql2 = "INSERT INTO Requisitionlines(itemdescription,expectedprice,actualprice,quantity,supplier,suppliername,createdon,modifiedon)
-        VALUES('$itemdescription','$expectedprice','$actualprice','$quantity','$supplier','$suppliername',getdate(), getdate())";
+foreach ($itemdescription as $key => $value) 
+{
+    $save = "INSERT INTO Requisitionlines(itemdescription,expectedprice,actualprice,quantity,supplier,suppliername,createdon,modifiedon)
+    VALUES('".$value."', '".$expectedprice[$key]."', '".$actualprice[$key]."','".$quantity[$key]."','".$supplier[$key]."',
+    '".$suppliername[$key]."', getdate(), getdate())";
+
+    
+    $stmt2 = sqlsrv_query($conn, $save);
+
+    if($stmt2) {
+        echo "<h3>data stored in a database successfully.</h3>" ;
+    }else{
+        die( print_r( sqlsrv_errors(), true));
+    }
+}
 
 $stmt = sqlsrv_query($conn, $sql);
-$stmt2 = sqlsrv_query($conn, $sql2);
 
-if($stmt && $stmt2) {
-    echo "<h3>data stored in a database successfully.</h3>" ;
-}else{
-    die( print_r( sqlsrv_errors(), true));
-}
+
 ?>
