@@ -15,27 +15,20 @@
             margin: 0;
             padding: 0;
         }
-        table,tr,th,td{
-            border-collapse: collapse;
-        } 
-        
-        table{
-            table-layout: fixed;
-            width: 100%; 
-        
-        }
-      
+       
     </style>
 
     <!-- Using jquery to add input fields and remove them dynamically inside a table -->
     <script type = "text/javascript">
-        $(document).ready(function () {
-
-            var html = '<tr><td><input class = "form-control" type="text"  name = "itemdescription[]" required/></td><td><input class = "form-control" type="number"  name = "quantity[]" required/></td><td><input class = "form-control" type="number"  name = " expectedprice[]" required/></td><td><input class = "form-control" type="number"  name = "actualprice[]" /></td><td><input class = "form-control" type="text"  name = "supplier[]" /></td><td><input class = "form-control" type="text"  name = "suppliername[]" required/></td><td><input class = "form-control" type="text"  name = "approvequoteid[]" /></td><td><input class = "form-control" type="number"  name = "amount[]" required/></td><td><select name = "choice[]" class = "form-control" disabled ><option value = " " selected>Approve Item</option><option value = "approved">Approved</option><option value = "rejected">Rejected</option><option value = "pending">Pending</option></select></td><td><input class = "btn btn-warning" type = "button" name = "remove" id = "remove" value = "Remove"></td></tr>';
-
+          $(document).ready(function(){
+            //Get the number of rows
+            var count = $(".itemrow").length;
             var x = 1;
             //to add rows
             $('#add').click(function () {
+                //counter
+                count++;
+                var html = '<tr><td hidden><input id="itemrow'+count+'" class = "itemrow" type="checkbox"  name = "itemrow" required hidden/></td><td><input class = "form-control" id="itemdescription'+count+'" type="text"  name = "itemdescription[]" required/></td><td><input id="quantity'+count+'" class = "form-control" type="number"  name = "quantity[]" required/></td><td><input id="expectedprice'+count+'" class = "form-control" type="number"  name = " expectedprice[]" required/></td><td><input id="actualprice'+count+'" class = "form-control" type="number"  name = "actualprice[]"/></td><td><input id="supplier'+count+'" class = "form-control" type="text"  name = "supplier[]" /></td><td><input class = "form-control" type="text" id="suppliername'+count+'" name = "suppliername[]" required/></td><td><input class = "form-control" type="text" id="approvedquoteid'+count+'"  name = "approvequoteid[]" /></td><td> <td><input id="departmentid1" class = "form-control" type="text"  name = "departmentid[]" /></td><input class = "form-control" type="number" id="amount'+count+'"  name = "amount[]" required/></td><td><select name = "choice[]" class = "form-control" disabled id="choice'+count+'" ><option value = " " selected>Approve Item</option><option value = "approved">Approved</option><option value = "rejected">Rejected</option><option value = "pending">Pending</option></select></td><td><input class = "btn btn-warning" type = "button" name = "remove" id = "remove" value = "Remove"></td></tr>';
                 $("#table_field").append(html);
             });
             //to remove rows
@@ -50,36 +43,67 @@
 
 </head>
 <body>
-    <h1>REQUISITION FORM</h1>
-    <div>
-    <form action="connector.php" method="POST" id= "insert_form" action = "">
+   
+    <div class = "container">
+    <form action="" method="POST" id= "insert_form" >
         <div id = "requisition_header">
-            <label>REQUISITION NUMBER:</label><input type="text" name="Reqnumber"    /><br/>
-            <label>DATE REQUESTED:</label><input type="date"  name="Reqdate"/><br/>
-            <label>USER ID:</label><input type="text" name="Userid" /><br/>
-            <label>DEPARTMENT:</label><input type="text" name="Department" /><br/>
-            <label>REQUISITION STATUS:</label><input type="checkbox" /><br/>
-            <label for="Approver">Approver:</label>
-
-<select name="approver" id="approver-select">
-    <option value="" >--Please choose the approver--</option>
-    <option value="User">User</option>
-    <option value="Aprrover Groups">Approver Groups</option>
-
-</select>
-<select name="user" id="user-select">
-    <option value="" ></option>
-    <option value="john">John</option>
-    <option value="john">Antony</option>
-    <option value="group">Department group</option>
-</select>
-
+        <h1>REQUISITION FORM</h1>
+        <!-- Fetching the reqnumber from the database giving it a readonly attribute -->
+            <label>REQUISITION NUMBER:</label><input type="text" name="Reqnumber" id="reqno" value ='<?php
+             include('config.php');
+             $sql = "select ('REQ' + cast(format(nextno,'00000') as varchar)) as reqnumber from cplreqdf"; 
+             $stmt = sqlsrv_query($conn,$sql);
+             while( $row = sqlsrv_fetch_array( $stmt, SQLSRV_FETCH_ASSOC) ) {
+                     echo $row["reqnumber"];
+             }
+             sqlsrv_close($conn); 
+            ?>' readonly/>
+            <br/>
+            <label>DATE REQUESTED:</label>
+            
+            <input type="text"  name="Reqdate" id = "datereq"  value = '
+            <?php
+               echo date('Y-m-d'); 
+            ?>
+            'readonly/><br/>
+            <label>USER ID:</label>
+            <?php
+                include('config.php');
+                $sql = "select * from cplusers";
+                $stmt = sqlsrv_query($conn, $sql);
+                if($stmt) {
+                    echo "<select name = 'userid' id = 'userid'  required>";
+                    while($row = sqlsrv_fetch_array( $stmt, SQLSRV_FETCH_ASSOC) ) {
+                    echo "<option value = '" .$row["userId"] . "'> " .$row["username"]."</option>";
+                    }
+                   echo "</select>";
+                }
+                sqlsrv_close($conn);
+            ?>
+            <br/>
+            <label>DEPARTMENT:</label>
+            <?php
+                include('config.php');
+                $sql = "select * from cpldepartment";
+                $stmt = sqlsrv_query($conn, $sql);
+                if($stmt) {
+                    echo "<select name ='department' id ='department'  required>";
+                    while($row = sqlsrv_fetch_array( $stmt, SQLSRV_FETCH_ASSOC) ) {
+                    echo "<option value = '" .$row["departmentId"] . "'> " .$row["description"]."</option>";
+                    }
+                   echo "</select>";
+                }
+                sqlsrv_close($conn);
+            ?>
+            
+            <br/>
             </div>
         </div>
-<hr>
+        <hr>
         <div class = "input--field">
             <table class = "table table-bordered" id = "table_field">
                 <tr>
+                    <th hidden><input type="checkbox" class="itemrow" name="checkall" id="checkall" hidden/></th>
                     <th>Item Description</th>
                     <th>Quantity</th>
                     <th>Expected Price</th>
@@ -87,21 +111,24 @@
                     <th>Supplier</th>
                     <th>Supplier Name</th>
                     <th>Approve Quote_id</th>
+                    <th>Department_id</th>
                     <th>Amount</th>
                     <th>Status</th>
                     <th></th>
                 </tr>
                 <tr>
-                    <td><input class = "form-control " type="text" name = "itemdescription[]" required/></td>
-                    <td><input class = "form-control" type="number"  name = "quantity[]" required/></td>
-                    <td><input class = "form-control" type="number"  name = " expectedprice[]" required/></td>
-                    <td><input class = "form-control" type="number"  name = "actualprice[]" /></td>
-                    <td><input class = "form-control" type="text"  name = "supplier[]" /></td>
-                    <td><input class = "form-control" type="text"  name = "suppliername[]" required/></td>
-                    <td><input class = "form-control" type="text"  name = "approvequoteid[]" /></td>
-                    <td><input class = "form-control" type="number"  name = "amount[]" required/></td>
+                    <td hidden><input type="checkbox" class="itemrow" id="itemrow1" hidden/></td>
+                    <td><input id="itemdescription1" class = "form-control " type="text" name = "itemdescription[]" required/></td>
+                    <td><input id="quantity1" class = "form-control" type="number"  name = "quantity[]" required/></td>
+                    <td><input id="expectedprice1" class = "form-control" type="number"  name = " expectedprice[]" required/></td>
+                    <td><input id="actualprice1" class = "form-control" type="number"  name = "actualprice[]" /></td>
+                    <td><input id="supplier1" class = "form-control" type="text"  name = "supplier[]" /></td>
+                    <td><input id="suppliername1" class = "form-control" type="text"  name = "suppliername[]" required/></td>
+                    <td><input id="approvequoteid1" class = "form-control" type="text"  name = "approvequoteid[]" /></td>
+                    <td><input id="departmentid1" class = "form-control" type="text"  name = "departmentid[]" /></td>
+                    <td><input id="amount1" class = "form-control" type="number"  name = "amount[]" required/></td>
                     <td>
-                        <select name = "choice[]" style ="width:124px" class = "form-control" disabled>
+                        <select id="choice1" name = "choice[]" style ="width:124px" class = "form-control" disabled>
                         <option value = " " selected>Approve Item</option>   
                         <option value = "approved">Approved</option>
                         <option value = "rejected">Rejected</option>
@@ -112,9 +139,63 @@
                 </tr>
             </table>
             <center>
-            <input class = "btn btn-success" type = "submit" name = "save" id = "save" value = "Save Data">
+            <button class = "btn btn-success" type = "submit" name = "save" id = "save">Save Data</button>
             </center>
         </div>
+        <script>
+            $(document).ready(function(){
+            $("#save").click(function(){
+                var itemdescription=[];
+                //push item description array
+                $('input[name^="itemdescription"]').each(function() {
+                    itemdescription.push(this.value);
+                });
+                var quantity=[];
+                //push quantity array
+                $('input[name^="quantity"]').each(function() {
+                    quantity.push(this.value);
+                });
+                var expectedprice=[];
+                //push expected price
+                $('input[name^="expectedprice"]').each(function() {
+                    expectedprice.push(this.value);
+                });
+                var actualprice=[];
+                //push actual price
+                $('input[name^="actualprice"]').each(function() {
+                    actualprice.push(this.value);
+                });
+                var supplier=[];
+                //push supplier
+                $('input[name^="supplier"]').each(function() {
+                    supplier.push(this.value);
+                });
+                var suppliername=[];
+                //push supplier name array
+                $('input[name^="suppliername"]').each(function() {
+                    suppliername.push(this.value);
+                });
+                var amount=[];
+                //push amount array
+                $('input[name^="amount"]').each(function() {
+                    amount.push(this.value);
+                });
+                $.ajax({
+                    url: 'connector.php',
+                    type: 'post',
+                    data: {itemdescription:itemdescription, quantity:quantity,expectedprice:expectedprice,
+                        actualprice:actualprice,supplier:supplier,
+                        suppliername:suppliername,amount:amount},
+                    success: function(result){
+                            alert(result);
+                        },
+                    error: function(result) {
+                            alert(result);
+                    }
+                            }); 
+                        });
+            });
+        </script>
     </form>
     </div>
 </body>
