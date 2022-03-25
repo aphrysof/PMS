@@ -1,5 +1,4 @@
-<?php
-?>
+<?php ?>
 <!DOCTYPE html>
 <html lang="en">
     <head>
@@ -15,7 +14,7 @@
     <body class="sb-nav-fixed">
         <nav class="sb-topnav navbar navbar-expand navbar-dark bg-dark">
             <!-- Navbar Brand-->
-            <a class="navbar-brand ps-3" href="index.php">PMS</a>
+            <a class="navbar-brand ps-3" href="requestsent.php">PMS</a>
             <!-- Sidebar Toggle-->
             <button class="btn btn-link btn-sm order-1 order-lg-0 me-4 me-lg-0" id="sidebarToggle" href="#!"><i class="fas fa-bars"></i></button>
             <!-- Navbar Search-->
@@ -103,23 +102,6 @@
                     </div>
                 </main>
             </div>
-            <!-- <div id="layoutSidenav_content">
-                <main>
-                    <div class="container-fluid px-4 py-4">
-                        <div class="card mb-4">
-                            <div class="card-header">
-                                <i class="fas fa-table me-1"></i>
-                                Requests
-                            </div>
-                            <div class="card-body">
-                                <table id="datatablesSimple">
-                                </table>
-                            </div>
-                        </div>
-                    </div>
-                </main>
-            </div> -->
-
         </div>
         <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js" crossorigin="anonymous"></script>
         <script src="js/scripts.js"></script>

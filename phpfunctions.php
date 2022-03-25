@@ -21,4 +21,18 @@ if($stmt2) {
     }
     
 }
+
+function readdepartment() {
+    include "config.php";
+    $sql = "select * from cpldepartment";
+    $stmt = sqlsrv_query($conn,$sql);
+    if ($stmt) {
+        $select = '<select name="department1[]">';
+        while( $row = sqlsrv_fetch_array( $stmt, SQLSRV_FETCH_ASSOC) ) {
+            $select.='<option value="' . $row["departmentId"] . '">' . $row["description"] . '</option>';
+        }
+    }
+    $select.="</select>";
+    echo $select;
+        }
 ?>
