@@ -1,5 +1,8 @@
 <?php
 include('config.php');
+include 'connector.php';
+
+
 $sql = "select * from cpldepartment";
 $stmt = sqlsrv_query($conn,$sql);
 if ($stmt) {
@@ -35,4 +38,14 @@ function readdepartment() {
     $select.="</select>";
     echo $select;
         }
+
+function viewform(){
+
+
+
+    
+}
 ?>
+
+
+   

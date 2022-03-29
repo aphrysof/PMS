@@ -65,10 +65,10 @@
                             </a>
                             <div class="collapse" id="collapseLayouts" aria-labelledby="headingOne" data-bs-parent="#sidenavAccordion">
                                 <nav class="sb-sidenav-menu-nested nav">
-                                    <a class="nav-link" href="#">New Supplier</a>
-                                    <a class="nav-link" href="#">New Quotation</a>
-                                    <a class="nav-link" href="#">New Approver Group</a>
-                                    <a class="nav-link" href="#">New Department</a>
+                                    <a class="nav-link" href="suppliersform.php">New Supplier</a>
+                                    <a class="nav-link" href="quotation.php">New Quotation</a>
+                                    <a class="nav-link" href="approvergroup.php">New Approver Group</a>
+                                    <a class="nav-link" href="department.php">New Department</a>
                                 </nav>
                             </div>
                             <!-- <a class="nav-link collapsed" href="#" data-bs-toggle="collapse" data-bs-target="#collapsePages" aria-expanded="false" aria-controls="collapsePages"> -->

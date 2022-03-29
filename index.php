@@ -1,4 +1,8 @@
 <?php
+    
+    include 'config.php';
+    $sql = "select ReqId, ReqNumber, userId, departmentId, ReqDate from Requsition";
+    $result = sqlsrv_query($conn, $sql);
 ?>
 <!DOCTYPE html>
 <html lang="en">
@@ -66,10 +70,10 @@
                             </a>
                             <div class="collapse" id="collapseLayouts" aria-labelledby="headingOne" data-bs-parent="#sidenavAccordion">
                                 <nav class="sb-sidenav-menu-nested nav">
-                                    <a class="nav-link" href="#">New Supplier</a>
-                                    <a class="nav-link" href="#">New Quotation</a>
-                                    <a class="nav-link" href="#">New Approver Group</a>
-                                    <a class="nav-link" href="#">New Department</a>
+                                    <a class="nav-link" href="suppliersform.php">New Supplier</a>
+                                    <a class="nav-link" href="quotation.php">New Quotation</a>
+                                    <a class="nav-link" href="approvergroup.php">New Approver Group</a>
+                                    <a class="nav-link" href="department.php">New Department</a>
                                 </nav>
                             </div>
                             <!-- <a class="nav-link collapsed" href="#" data-bs-toggle="collapse" data-bs-target="#collapsePages" aria-expanded="false" aria-controls="collapsePages"> -->
@@ -96,30 +100,38 @@
                                 Requests
                             </div>
                             <div class="card-body">
-                                <table id="datatablesSimple">
-                                </table>
+                            <table class="table table-hover" id="datatablesSimple">
+                                <thead>
+                                    <tr>
+                                        <th scope="col">#</th>
+                                        <th scope="col">Requisition Number</th>
+                                        <th scope="col">User</th>
+                                        <th scope="col">Department</th>
+                                        <th scope="col">Date</th>
+                                        <th scope="col">Action</th>
+                                    </tr>
+                                </thead>
+                                <?php 
+                                
+                                while( $row = sqlsrv_fetch_array($result, SQLSRV_FETCH_ASSOC)) {
+                               
+                                    ?>
+                                    <tr>
+                                        <td><?php echo $row['ReqId']?></td>
+                                        <td><?php echo $row['ReqNumber'] ?></td>
+                                        <td><?php echo $row['userId']?></td>
+                                        <td><?php echo $row['departmentId']?></td>
+                                        <td><?php echo $row['ReqDate']->format('d/m/Y')?></td>
+                                        <td><a href = 'viewform.php?ReqId=<?php echo $row["ReqId"]; ?>'class = "btn btn-primary" >View</a></td>
+                                    </tr>
+                                    <?php } ?>
+                            </table>    
                             </div>
                         </div>
                     </div>
                 </main>
             </div>
-            <!-- <div id="layoutSidenav_content">
-                <main>
-                    <div class="container-fluid px-4 py-4">
-                        <div class="card mb-4">
-                            <div class="card-header">
-                                <i class="fas fa-table me-1"></i>
-                                Requests
-                            </div>
-                            <div class="card-body">
-                                <table id="datatablesSimple">
-                                </table>
-                            </div>
-                        </div>
-                    </div>
-                </main>
-            </div> -->
-
+           
         </div>
         <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js" crossorigin="anonymous"></script>
         <script src="js/scripts.js"></script>
@@ -127,3 +139,9 @@
         <script src="js/datatables-simple-demo.js"></script>
     </body>
 </html>
+<?php 
+include('config.php');
+
+
+
+?>

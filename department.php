@@ -5,84 +5,117 @@
         <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.6.1/dist/css/bootstrap.min.css">
+  <link href="css/styles.css" rel="stylesheet" />
   <script src="https://cdn.jsdelivr.net/npm/jquery@3.6.0/dist/jquery.slim.min.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.1/dist/umd/popper.min.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/bootstrap@4.6.1/dist/js/bootstrap.bundle.min.js"></script>
-        <style>
-          *{
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-          }
-          body{
-            min-height: 100vh;
-            background: #eee;
-            display: flex;
-            font-family: serif;
-          }
-          .container{
-            margin: auto;
-            width: 500px;
-            max-width: 90%;
-          }
-          .container form{
-            width: 100%;
-            height: 100%;
-            padding: 20px;
-            background: #eee;
-            border-radius: 4px;
-            box-shadow: 0 8px 16px rgba(0, 0, 0,.3);
-          }
-          .container form h2{
-            text-align: center;
-            margin-bottom: 24px;
-            color: #222;
-          }
-          .container form .form-control{
-            width: 100%;
-            height: 40px;
-            background: white;
-            border-radius: 4px;
-            border: 1px solid silver;
-            margin: 15px 0 18px 0;
-            padding: 0 10px;
-          }
-          .container form .btn{
-            margin-left: 40%;
-            transform: translateX(-50);
-            width: 100px;
-            height: 34px;
-            border: none;
-            outline: none;
-            background: grey;
-            cursor: pointer;
-            font-size: 16px;
-            text-transform: uppercase;
-            border-radius: 4px;
-            transition: .3s;
-          }
-
-        </style>
-        
-    </head>
-    
-<body>
-        
+  <script src="https://use.fontawesome.com/releases/v6.1.0/js/all.js" crossorigin="anonymous"></script>
    
-<div class="container">   
-    <form action="" method = "post">
-    <h2>New Department</h2>
-      <div class="form-group">
-        <label for="">Department ID</label>
-        <input type="text" class="form-control" name="Dep_id" required>
-      </div>
-      <div class="form-group">
-        <label for="">Description</label>
-        <input type="text" class="form-control" name="Department_description" required>
-      </div>
-     <input type="submit" class="btn" value="create" name = "insert">
-    </form>
+    </head>
 
+    
+<body class="sb-nav-fixed"> 
+<nav class="sb-topnav navbar navbar-expand navbar-dark bg-dark">
+            <!-- Navbar Brand-->
+            <a class="navbar-brand ps-3" href="index.php">PMS</a>
+            <!-- Sidebar Toggle-->
+            <button class="btn btn-link btn-sm order-1 order-lg-0 me-4 me-lg-0" id="sidebarToggle" href="#!"><i class="fas fa-bars"></i></button>
+            <!-- Navbar Search-->
+            <form class="d-none d-md-inline-block form-inline ms-auto me-0 me-md-3 my-2 my-md-0">
+                <div class="input-group">
+                    <input class="form-control" type="text" placeholder="Search for..." aria-label="Search for..." aria-describedby="btnNavbarSearch" />
+                    <button class="btn btn-primary" id="btnNavbarSearch" type="button"><i class="fas fa-search"></i></button>
+                </div>
+            </form>
+            <!-- Navbar-->
+            <div class = "input group">     
+                <button type="button" class="btn btn-light mx-3 d-flex justify-content-center align-items-center" style = "position: relative; height: 24px; width: 24px;"><i class="fa-solid fa-bell"></i>
+                <span class= "position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger">3</span>
+                </button>
+            </div>
+
+            <ul class="navbar-nav ms-auto ms-md-0 me-2 me-lg-4">
+                <li class="nav-item dropdown">
+                    <a class="nav-link dropdown-toggle" id="navbarDropdown" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false"><i class="fas fa-user fa-fw"></i></a>
+                    <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="navbarDropdown">
+                        <li><a class="dropdown-item" href="#!">Settings</a></li>
+                        <li><a class="dropdown-item" href="#!">Activity Log</a></li>
+                        <li><hr class="dropdown-divider" /></li>
+                        <li><a class="dropdown-item" href="#!">Logout</a></li>
+                    </ul>
+                </li>
+            </ul>
+
+        </nav>
+<div id="layoutSidenav">
+  <div id="layoutSidenav_nav">
+      <nav class="sb-sidenav accordion sb-sidenav-dark" id="sidenavAccordion">
+          <div class="sb-sidenav-menu">
+              <div class="nav">
+                  <div class="sb-sidenav-menu-heading">Core</div>
+                  <a class="nav-link" href="index.php">
+                      <div class="sb-nav-link-icon"><i class="fas fa-tachometer-alt"></i></div>
+                      Dashboard
+                  </a>
+                  <a class="nav-link" href="Requisition.php">
+                      <div class="sb-nav-link-icon"><i class="fas fa-table"></i></div>
+                      Create Requisition
+                  </a>
+                  <a class="nav-link collapsed" href="#" data-bs-toggle="collapse" data-bs-target="#collapseLayouts" aria-expanded="true" aria-controls="collapseLayouts">
+                      <div class="sb-nav-link-icon"><i class="fa-solid fa-plus"></i></div>
+                      Create
+                      <div class="sb-sidenav-collapse-arrow"><i class="fas fa-angle-down"></i></div>
+                  </a>
+                  <div class="collapse" id="collapseLayouts" aria-labelledby="headingOne" data-bs-parent="#sidenavAccordion">
+                      <nav class="sb-sidenav-menu-nested nav">
+                          <a class="nav-link" href="suppliersform.php">New Supplier</a>
+                          <a class="nav-link" href="quotation.php">New Quotation</a>
+                          <a class="nav-link" href="approvergroup.php">New Approver Group</a>
+                          <a class="nav-link" href="department.php">New Department</a>
+                      </nav>
+                  </div>
+                  <a class="nav-link" href="requestsent.php">
+                      <div class="sb-nav-link-icon "><i class="fas fa-table"></i></div>
+                      Requests Sent
+                  </a>
+              </div>
+          </div>
+      </nav>
+  </div>
+            <!-- Our code  -->
+  <div id="layoutSidenav_content">
+    <main>
+      <div class="container"> 
+        <div class = "row justify-content-center">
+           <div class = "col-md-8">
+              <div class = "card mt-5">
+                <div class = "card-header text-center"> 
+                  <h2>New Department</h2>
+                </div>
+               <div class = "card-body">
+                 <form action="" method = "post">
+                    <div class="form-group">
+                       <label for="">Department ID</label>
+                           <input type="text" class="form-control" name="Dep_id" required>
+                     </div>
+                     <div class="form-group">
+                       <label for="">Description</label>
+                          <input type="text" class="form-control" name="Department_description" required>
+                      </div>
+                     <center>
+                        <input type="submit" class="btn btn-primary" value="create" name = "insert">
+                     </center>
+                  </form>
+               </div> 
+             </div>
+            </div>
+         </div>
+        </div>
+    </main>
+  </div>
+</div>
+<script src="js/scripts.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js" crossorigin="anonymous"></script>
 </html>
 </body>
 
