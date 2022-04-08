@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="en">
+<ht6ml lang="en">
     <head>
         <title>Department Form</title>
         <meta charset="utf-8">
@@ -96,11 +96,11 @@
                  <form action="" method = "post">
                     <div class="form-group">
                        <label for="">Department ID</label>
-                           <input type="text" class="form-control" name="Dep_id" required>
+                           <input type="text" class="form-control" name="Dep_id[]" required>
                      </div>
                      <div class="form-group">
                        <label for="">Description</label>
-                          <input type="text" class="form-control" name="Department_description" required>
+                          <input type="text" class="form-control" name="Department_description[]" required>
                       </div>
                      <center>
                         <input type="submit" class="btn btn-primary" value="create" name = "insert">

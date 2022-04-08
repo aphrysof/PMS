@@ -1,6 +1,6 @@
 <?php
 
-$serverName = "localhost"; //serverName\instanceName, portNumber (default is 1433)
+$serverName = "DESKTOP-AD8OSTQ"; //serverName\instanceName, portNumber (default is 1433)
 $connectionInfo = array( "Database"=>"pms", "UID"=>"sa", "PWD"=>"Bunsoph@16");
 $conn = sqlsrv_connect( $serverName, $connectionInfo);
 

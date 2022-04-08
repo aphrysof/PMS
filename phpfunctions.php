@@ -37,13 +37,19 @@ function readdepartment() {
     }
     $select.="</select>";
     echo $select;
+}
+function addquotation () {
+    include 'config.php';
+    $sql = "select * from cplquotation";
+    $stmt = sqlsrv_query($conn, $sql);
+    if($stmt) {
+        $select = '<select name ="approvequoteid[]">';
+        while($row = sqlsrv_fetch_array($stmt, SQLSRV_FETCH_ASSOC)) {
+            $select.='<option value = "' .$row["Quote_id"].'"> '.$row["Quote_no"].'</option>';
         }
-
-function viewform(){
-
-
-
-    
+        $select.='</select>';
+        echo $select;
+}
 }
 ?>
 

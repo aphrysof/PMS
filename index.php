@@ -1,7 +1,8 @@
 <?php
     
     include 'config.php';
-    $sql = "select ReqId, ReqNumber, userId, departmentId, ReqDate from Requsition";
+    $sql = "select ReqId, ReqNumber, username, ct.description, ReqDate from Requsition rn join cplusers cs
+    on rn.userId = cs.userId join cpldepartment ct on rn.departmentId = ct.departmentId";
     $result = sqlsrv_query($conn, $sql);
 ?>
 <!DOCTYPE html>
@@ -119,8 +120,8 @@
                                     <tr>
                                         <td><?php echo $row['ReqId']?></td>
                                         <td><?php echo $row['ReqNumber'] ?></td>
-                                        <td><?php echo $row['userId']?></td>
-                                        <td><?php echo $row['departmentId']?></td>
+                                        <td><?php echo $row['username']?></td>
+                                        <td><?php echo $row['description']?></td>
                                         <td><?php echo $row['ReqDate']->format('d/m/Y')?></td>
                                         <td><a href = 'viewform.php?ReqId=<?php echo $row["ReqId"]; ?>'class = "btn btn-primary" >View</a></td>
                                     </tr>

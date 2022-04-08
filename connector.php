@@ -1,10 +1,10 @@
 <?php
 include('config.php');
 
-if(isset($_POST['save'])){
+ if(isset($_POST['save'])){
 
-$userid = $_POST['userid'] ?? '';
-$department2 = $_POST['department2'] ?? '';
+$userid = $_POST['userid'];
+$department2 = $_POST['department2'] ?? 0;
 $department1 = $_POST['department1'] ?? 0;
 //$approver = $_POST['approver'] ?? '';
 $itemdescription = $_POST['itemdescription'] ?? '';
@@ -15,7 +15,6 @@ $supplier = $_POST['supplier'] ?? '';
 $suppliername = $_POST['suppliername'] ?? '';
 $amount = $_POST['amount'] ?? 0;
 $approvequoteid = $_POST['approvequoteid'] ?? 0;
-
 
 $sql = "
 --declare req as a variable
@@ -47,7 +46,7 @@ for($i = 0; $i < count($itemdescription); $i++) {
     
     sqlsrv_query($conn, $save);
     
-    header('location: index.php');
+ 
 
 }
 
@@ -58,7 +57,7 @@ for($i = 0; $i < count($itemdescription); $i++) {
 
     if($stmt2) {
         
-        echo alert("message successfully sent");
+        echo ("message successfully sent");
     }else{
         echo die( print_r( sqlsrv_errors(), true));
     }

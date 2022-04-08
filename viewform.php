@@ -2,11 +2,13 @@
 include 'config.php';
 
 $ReqId = $_GET['ReqId'] ?? '';
-$sql = "select ReqId, ReqNumber, userId, departmentId, ReqDate from Requsition where ReqId=$ReqId";
+$sql = "select ReqId, ReqNumber, username, ct.description, ReqDate from Requsition rn join cplusers cs
+on rn.userId = cs.userId join cpldepartment ct on rn.departmentId = ct.departmentId where ReqId=$ReqId";
 $result = sqlsrv_query($conn, $sql);
 
-
-$sql2 = "select itemdescription, expectedprice, actualprice, quantity,supplier,suppliername,departmentId,approvequoteid,amount from Requisitionlines where ReqId=$ReqId";
+$Reqlineid = $_GET['Reqlineid'] ?? '';
+$sql2 = "select Reqlineid, itemdescription, expectedprice, actualprice, quantity,supplier,suppliername,description,Quote_id,amount from Requisitionlines rs 
+join cpldepartment ct on rs.departmentId = ct.departmentId where ReqId=$ReqId";
 $stmt = sqlsrv_query($conn, $sql2);
 ?>
 <!DOCTYPE html>
@@ -98,27 +100,28 @@ $stmt = sqlsrv_query($conn, $sql2);
    <main>
     <div class="container-fluid px-4 py-4">
         <div class="card mb-4">
-    <form action="updateform.php" method="post" id= "update_form" >
+   
         <div id = "requisition_header">
             <?php
             while( $row = sqlsrv_fetch_array( $result, SQLSRV_FETCH_ASSOC) ) {?>
             <h1>REQUISITION FORM</h1>
         <!-- Fetching the reqnumber from the database giving it a readonly attribute -->
-             <label>REQUISITION NUMBER:</label><input type="text" name="Reqnumber" id="reqno" value = "<?php echo $row['ReqNumber'] ?>" readonly/>
+             <label>REQUISITION NUMBER:</label><input type="text" name="Reqnumber" id="reqno" value = "<?php echo $row['ReqNumber'] ?>" disabled/>
             <br/>
             <label>DATE REQUESTED:</label>
             
-            <input type="text"  name="Reqdate" id = "datereq" value = "<?php echo  $row['ReqDate']->format('d/m/Y')?>" readonly/><br/>
+            <input type="text"  name="Reqdate" id = "datereq" value = "<?php echo  $row['ReqDate']->format('d/m/Y')?>" disabled/><br/>
             <label>USER ID:</label>
-                   <input type="text"  name="userid" id = "userid" value ="<?php echo $row['userId'] ?>" readonly/>
+                   <input type="text"  name="userid" id = "userid" value ="<?php echo $row['username'] ?>" disabled/>
             <br/>
             <label>DEPARTMENT:</label>
-            <input type="text"  name="department2" id = "department2" value ="<?php echo $row['departmentId'] ?>" readonly/> <br/>    
+            <input type="text"  name="department2" id = "department2" value ="<?php echo $row['description'] ?>" disabled/> <br/>    
           <?php }?>
             </div>
         </div>
         <hr>
-        <div class = "input--field">
+
+        
             <table class = "table table-bordered" id = "table_field">
                 <tr>
                     <th hidden><input type="checkbox" class="itemrow" name="checkall" id="checkall" hidden/></th>
@@ -137,6 +140,7 @@ $stmt = sqlsrv_query($conn, $sql2);
                     <?php
                     while( $row = sqlsrv_fetch_array( $stmt, SQLSRV_FETCH_ASSOC) ) { ?>
                             <tr>
+                             <input type = "text" name="Reqlineid[]" value = "<?php echo $row['Reqlineid']?>" hidden />
                             <td hidden><input type="checkbox" class="itemrow" id="itemrow1" hidden/></td>
                             <td><input id="itemdescription1" class = "form-control " type="text" name = "itemdescription[]" value = "<?php echo $row['itemdescription']; ?>" /></td>
                             <td><input id="quantity1" class = "form-control" type="number"  name = "quantity[]"  value = "<?php echo $row['quantity'] ?>" /></td>
@@ -144,12 +148,15 @@ $stmt = sqlsrv_query($conn, $sql2);
                             <td><input id="actualprice1" class = "form-control" type="number"  name = "actualprice[]" value = "<?php echo $row['actualprice'] ?>" /></td>
                             <td><input id="supplier1" class = "form-control" type="text"  name = "supplier[]" value = "<?php echo $row['supplier'] ?>"  /></td>
                             <td><input id="suppliername1" class = "form-control" type="text"  name = "suppliername[]" value = "<?php echo $row['suppliername'] ?>" /></td>
-                            <td><input id="approvequoteid1" class = "form-control" type="text"  name = "approvequoteid[]"  value = "<?php echo $row['approvequoteid'] ?>" /></td>
-                            <td><input id="department1" class = "form-control" type="text"  name = "department[]" value = "<?php echo $row['departmentId'] ?>" readonly /></td>
+                            <td><button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#exampleModal">
+                           Quotations
+                            </button>
+                            </td>
+                            <td><input id="department1" class = "form-control" type="text"  name = "department[]" value = "<?php echo $row['description'] ?>" readonly /></td>
                             <td><input id="amount1" class = "form-control" type="number"  name = "amount[]" value = "<?php echo $row['amount'] ?>" /></td>
                             <td>
-                                <select id="choice1" name = "choice[]" style ="width:124px" class = "form-control">
-                                <option value = " " selected>Approve Item</option>   
+                                <select id="choice1" name = "choice[]" style ="width:124px" class = "form-select">
+                                <option value = " " hidden>Approve Item</option>   
                                 <option value = "approved">Approved</option>
                                 <option value = "rejected">Rejected</option>
                                 </select>
@@ -158,9 +165,114 @@ $stmt = sqlsrv_query($conn, $sql2);
                     <?php } ?>
             </table>
             <center>
-            <button class = "btn btn-success" type = "submit" name = "update" id = "save">Update Data</button>
+            <button class = "btn btn-success" type = "submit" name = "update" id = "update">Save Changes</button>
             </center>
         </div>
+        <script>
+            $(document).ready(function () {
+                $('#update').click(function () { 
+                   
+                var Reqlineid=[];
+                //push item description array
+                $('input[name^="Reqlineid"]').each(function() {
+                    Reqlineid.push(this.value);
+                });
+                var itemdescription=[];
+                //push item description array
+                $('input[name^="itemdescription"]').each(function() {
+                    itemdescription.push(this.value);
+                });
+                var quantity=[];
+                //push quantity array
+                $('input[name^="quantity"]').each(function() {
+                    quantity.push(this.value);
+                });
+                var expectedprice=[];
+                //push expected price
+                $('input[name^="expectedprice"]').each(function() {
+                    expectedprice.push(this.value);
+                });
+                var actualprice=[];
+                //push actual price
+                $('input[name^="actualprice"]').each(function() {
+                    actualprice.push(this.value);
+                });
+                var supplier=[];
+                //push supplier
+                $('input[name^="supplier"]').each(function() {
+                    supplier.push(this.value);
+                });
+                var suppliername=[];
+                //push supplier name array
+                $('input[name^="suppliername"]').each(function() {
+                    suppliername.push(this.value);
+                });
+                var amount=[];
+                //push amount array
+                $('input[name^="amount"]').each(function() {
+                    amount.push(this.value);
+                });
+                var approvequoteid=[];
+                //push approvequoteid array
+                $('input[name^="approvequoteid"]').each(function() {
+                    approvequoteid.push(this.value);
+                });
+        
+                var choice = [];
+                $('select[name^="choice"]').each(function () {
+                    choice.push(this.value);
+                });
+
+                    $.ajax({
+                        type: "POST",
+                        url: "updateform.php",
+                        data: {Reqlineid:Reqlineid, itemdescription:itemdescription, quantity:quantity, expectedprice:expectedprice, actualprice:actualprice,
+                        supplier:supplier, suppliername:suppliername, amount:amount, approvequoteid:approvequoteid, choice:choice},
+                        success: function (result) {
+                            alert(result);
+                        },
+                    }); 
+                });
+            });
+        </script>
+
+<!-- Modal -->
+<div class="modal fade" id="exampleModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+  <div class="modal-dialog  modal-xl">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="exampleModalLabel">Quotations</h5>
+      </div>
+      <div class="modal-body">
+        <table class="table table-striped table-hover">
+            <tr>
+                <th>Quote no</th>
+                <th>Item Description</th>
+                <th>Quantity</th>
+                <th>Unit Price</th>
+                <th>Total Amount</th>
+                <th>Select</th>
+            </tr>
+            <tr>
+                <td></td>
+                <td></td>
+                <td></td>
+                <td></td>
+                <td></td>
+                <td><div><input class="form-check-input" type="checkbox" id="checkboxNoLabel" value="" aria-label="..."></div></td>
+            </tr>
+        </table>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+        <button type="button" class="btn btn-primary">Save changes</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.10.2/dist/umd/popper.min.js" integrity="sha384-7+zCNj/IqJ95wo16oMtfsKbZ9ccEh31eOz1HGyDuCQ6wgnyJNSYdrPa03rtR1zdB" crossorigin="anonymous"></script>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.min.js" integrity="sha384-QJHtvGhmr9XOIpI6YVutG+2QOK9T+ZnN4kzFN1RtK3zEFEIsxhlmWl5/YESvpZ13" crossorigin="anonymous"></script>
 </body>
 </html>
 

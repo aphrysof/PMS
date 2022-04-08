@@ -7,19 +7,21 @@
     <link href="css/styles.css" rel="stylesheet" />
     <link href='https://unpkg.com/boxicons@2.1.2/css/boxicons.min.css' rel='stylesheet'>
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-1BmE4kWBq78iYhFldvKuhfTAU6auU8tT94WrHftjDbrCEXSU1oBoqyl2QvZ6jIW3" crossorigin="anonymous">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.1.3/dist/css/bootstrap.min.css">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-select@1.13.14/dist/css/bootstrap-select.min.css">
     <script src="https://use.fontawesome.com/releases/v6.1.0/js/all.js" crossorigin="anonymous"></script>
+    <script src="https://cdn.jsdelivr.net/npm/popper.js@1.14.3/dist/umd/popper.min.js" ></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@4.1.3/dist/js/bootstrap.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap-select@1.13.14/dist/js/bootstrap-select.min.js"></script>
     <title>REQ FORM</title>
-    <style>
-        * {
-            box-sizing: border-box;
-            margin: 0;
-            padding: 0;
-        }
-       
-    </style>
+</head>
 
-    <!-- Using jquery to add input fields and remove them dynamically inside a table -->
+<style>
+    .bootstrap-select:not([class*=col-]):not([class*=form-control]):not(.input-group-btn){
+        width: 100%;
+    }
+</style>
+  <!-- Using jquery to add input fields and remove them dynamically inside a table -->
     <script type = "text/javascript">
           $(document).ready(function(){
             //Get the number of rows
@@ -30,22 +32,44 @@
                 <?php include('phpfunctions.php');?>
                 //counter
                 count++;
-                var html = '<tr><td hidden><input id="itemrow'+count+'" class = "itemrow" type="checkbox"  name = "itemrow" required hidden/></td><td><input class = "form-control" id="itemdescription'+count+'" type="text"  name = "itemdescription[]" required/></td><td><input id="quantity'+count+'" class = "form-control" type="number"  name = "quantity[]" required/></td><td><input id="expectedprice'+count+'" class = "form-control" type="number"  name = "expectedprice[]" required/></td><td><input id="actualprice'+count+'" class = "form-control" type="number"  name = "actualprice[]"/></td><td><input id="supplier'+count+'" class = "form-control" type="text"  name = "supplier[]" /></td><td><input class = "form-control" type="text" id="suppliername'+count+'" name = "suppliername[]" required/></td><td><input class = "form-control" type="text" id="approvequoteid'+count+'"  name = "approvequoteid[]" /></td><td><SELECT id="department'+count+'" style="height:5%; width:100px;" class="form-control" name="department1[]" onchange="document.write(<?php readdepartment(); ?></SELECT></td><td><input class = "form-control" type="number" id="amount'+count+'"  name = "amount[]" required/></td><td><select name = "choice[]" class = "form-control" disabled id="choice'+count+'" ><option value = " " selected>Approve Item</option><option value = "approved">Approved</option><option value = "rejected">Rejected</option><option value = "pending">Pending</option></select></td><td><input class = "btn btn-warning" type = "button" name = "remove" id = "remove" value = "Remove"></td></tr>';
+                var html = '<tr><td hidden><input id="itemrow'+count+'" class = "itemrow" type="checkbox"  name = "itemrow" required hidden/></td><td><input class = "form-control" id="itemdescription'+count+'" type="text"  name = "itemdescription[]" required/></td>';
+                html += '<td><input id="quantity'+count+'" class = "form-control" type="text"  name = "quantity[]" required/></td>';
+
+                $(document).on('keyup','#quantity'+count+',#actualprice'+count+'', function(){
+                    var qty = $('#quantity'+count+'').val();
+                    var price =$('#actualprice'+count+'').val();
+                    var amount  = qty * price;
+                    $('#amount'+count+'').val(parseFloat(amount.toFixed(2)));
+                    
+                });
+                html += '<td><input id="actualprice'+count+'" class = "form-control" type="text"  name = "actualprice[]"/></td><td><input id="supplier'+count+'" class = "form-control" type="text"  name = "supplier[]" /></td><td><input class = "form-control" type="text" id="suppliername'+count+'" name = "suppliername[]" required/></td>';
+               html += '<td><select class = "form-control selectpicker" data-dropup-auto="false" data-live-search="true" multiple = "multiple" data-selected-text-format="count" data-size="2"  id="approvequoteid'+count+'" name ="approvequoteid[]" onchange="document.write<?php addquotation();?></select> </td><td><select id="department'+count+'" name="department1[]" style="height:5%;" class="form-select" onchange="document.write<?php readdepartment();?></select></td><td><input class = "form-control" type="text" id="amount'+count+'"  name = "amount[]" required/></td></td><td><button class = "btn btn-danger d-flex align-items-center" id = "remove" name = "remove"><i class="fa-solid fa-minus"></i> Item</button></td></tr>';
                 $("#table_field").append(html);
+
+                $('.selectpicker').selectpicker();
+                $('.selectpicker').selectpicker('refresh');
             });
             //to remove rows
             $('#table_field').on('click', '#remove',function () {
                 $(this).closest('tr').remove();
-            })
+            });
             
             // closest-method searches through these elements and their ancestors in the DOM tree and constructs a new jQuery object from the matching elements
 
+
+          $("#actualprice1 ,#quantity1" ).on('keyup', function() { 
+
+            var qty = $("#quantity1").val();
+            var price =$("#actualprice1").val();
+            var amount  = qty * price;
+            $("#amount1").val(parseFloat(amount.toFixed(2)));
+
+            });
+           $('.approvequoteid').selectpicker('refresh');
+            
         });
     </script>
-
-</head>
-
-<body class="sb-nav-fixed">
+<body class="sb-nav-fixed"></body>
 <nav class="sb-topnav navbar navbar-expand navbar-dark bg-dark">
             <!-- Navbar Brand-->
             <a class="navbar-brand ps-3" href="index.php">PMS</a>
@@ -118,7 +142,6 @@
    <main>
     <div class="container-fluid px-4 py-4">
         <div class="card mb-4">
-    <form action="connector.php" method="POST" id= "insert_form" >
         <div id = "requisition_header">
         <h1>REQUISITION FORM</h1>
         <!-- Fetching the reqnumber from the database giving it a readonly attribute -->
@@ -146,8 +169,9 @@
                 $stmt = sqlsrv_query($conn, $sql);
                 if($stmt) {
                     echo "<select name = 'userid' id = 'userid'  required>";
+                    echo "<option value = 0 hidden>Select user</option>";
                     while($row = sqlsrv_fetch_array( $stmt, SQLSRV_FETCH_ASSOC) ) {
-                    echo "<option value = '" .$row["userId"] . "'> " .$row["username"]."</option>";
+                    echo "<option value = " .$row["userId"] . "> " .$row["username"]."</option>";
                     }
                    echo "</select>";
                 }
@@ -162,7 +186,7 @@
                 if($stmt) {
                     echo "<select name ='department2' id ='department2'  required>";
                     while($row = sqlsrv_fetch_array( $stmt, SQLSRV_FETCH_ASSOC) ) {
-                    echo "<option value = '" .$row["departmentId"] . "'> " .$row["description"]."</option>";
+                    echo "<option value = " .$row["departmentId"] . "> " .$row["description"]."</option>";
                     }
                    echo "</select>";
                 }
@@ -173,37 +197,46 @@
             </div>
         </div>
         <hr>
-        <div class = "input--field">
             <table class = "table table-bordered" id = "table_field">
                 <tr>
-                    <th hidden><input type="checkbox" class="itemrow" name="checkall" id="checkall" hidden/></th>
+                    <th hidden><input type="checkbox" class="itemrow" name="checkall" id="checkall"  hidden/></th>
                     <th>Item Description</th>
                     <th>Quantity</th>
-                    <th>Expected Price</th>
-                    <th>Actual Price</th>
+                    <th>Unit price</th>
                     <th>Supplier</th>
                     <th>Supplier Name</th>
-                    <th>Approve Quote_id</th>
+                    <th>Attach Quote</th>
                     <th>Department_id</th>
                     <th>Amount</th>
-                    <th>Status</th>
                     <th></th>
                 </tr>
                 <tr>
                     <td hidden><input type="checkbox" class="itemrow" id="itemrow1" hidden/></td>
                     <td><input id="itemdescription1" class = "form-control " type="text" name = "itemdescription[]" required/></td>
-                    <td><input id="quantity1" class = "form-control" type="number"  name = "quantity[]" required/></td>
-                    <td><input id="expectedprice1" class = "form-control" type="number"  name = "expectedprice[]" required/></td>
-                    <td><input id="actualprice1" class = "form-control" type="number"  name = "actualprice[]" /></td>
+                    <td><input id="quantity1" class = "form-control" type="text"  name = "quantity[]" required/></td>
+                    <td><input id="actualprice1" class = "form-control" type="text"  name = "actualprice[]" /></td>
                     <td><input id="supplier1" class = "form-control" type="text"  name = "supplier[]" /></td>
                     <td><input id="suppliername1" class = "form-control" type="text"  name = "suppliername[]" required/></td>
-                    <td><input id="approvequoteid1" class = "form-control" type="text"  name = "approvequoteid[]" /></td>
+                    <td><?php
+                    include 'config.php';
+                    $sql = "select * from cplquotation";
+                    $stmt = sqlsrv_query($conn, $sql);
+                    if($stmt) {
+                        echo "<select class = 'form-control selectpicker' data-dropup-auto='false' data-live-search='true' multiple = 'multiple' data-selected-text-format='count' data-size='2' name ='approvequoteid[]'
+                         id = 'approvequoteid1' required>";
+                        while($row = sqlsrv_fetch_array($stmt, SQLSRV_FETCH_ASSOC)) {
+                            
+                            echo "<option value = '" .$row["Quote_id"]."'> " .$row["Quote_no"]."</option>";
+                        }
+                        echo "</select>";
+                    }
+                    ?></td>
                     <td><?php
                         include('config.php');
                         $sql = "select * from cpldepartment";
                         $stmt = sqlsrv_query($conn, $sql);
                         if($stmt) {
-                            echo "<select class = 'form-control' name ='department1[]' id ='department1'  required>";
+                            echo "<select class = 'form-select' name ='department1[]' id ='department1'  required>";
                             while($row = sqlsrv_fetch_array( $stmt, SQLSRV_FETCH_ASSOC) ) {
                             echo "<option value = '" .$row["departmentId"] . "'> " .$row["description"]."</option>";
                             }
@@ -211,22 +244,14 @@
                         }
                         sqlsrv_close($conn);
                     ?></td>
-                    <td><input id="amount1" class = "form-control" type="number"  name = "amount[]" required/></td>
-                    <td>
-                        <select id="choice1" name = "choice[]" style ="width:124px" class = "form-control" disabled>
-                        <option value = " " selected>Approve Item</option>   
-                        <option value = "approved">Approved</option>
-                        <option value = "rejected">Rejected</option>
-                        <option value = "pending">Pending</option>
-                        </select>
-                    </td>
-                    <td><input class = "btn btn-danger" type = "button" name = "add" id = "add" value = "Add Row"></td>
+                    <td><input id="amount1" class = "form-control" type="text"  name = "amount[]"  required/></td>
+                    <td><button class = "btn btn-danger d-flex align-items-center"  id ="add" name = "add"><i class="fa-solid fa-plus"></i> Item</button></td>   
+    
                 </tr>
             </table>
             <center>
-            <button class = "btn btn-success" type = "submit" name = "save" id = "save">Save Data</button>
+            <button class = "btn btn-success"  name = "save" id = "save">Save Data</button>
             </center>
-        </div>
         <script>
             $(document).ready(function(){
             $("#save").click(function(){
@@ -239,11 +264,6 @@
                 //push quantity array
                 $('input[name^="quantity"]').each(function() {
                     quantity.push(this.value);
-                });
-                var expectedprice=[];
-                //push expected price
-                $('input[name^="expectedprice"]').each(function() {
-                    expectedprice.push(this.value);
                 });
                 var actualprice=[];
                 //push actual price
@@ -267,7 +287,7 @@
                 });
                 var approvequoteid=[];
                 //push approvequoteid array
-                $('input[name^="approvequoteid"]').each(function() {
+                $('select[name^="approvequoteid"]').each(function() {
                     approvequoteid.push(this.value);
                 });
                 var department1=[];
@@ -275,23 +295,25 @@
                 $('select[name^="department1"]').each(function() {
                     department1.push(this.value);
                 });
+
                 $.ajax({
-                    url: 'connector.php',
+                    url: 'insertreq.php',
                     type: 'post',
-                    data: {itemdescription:itemdescription, quantity:quantity,expectedprice:expectedprice,
+                    data: {itemdescription:itemdescription, quantity:quantity,
                         actualprice:actualprice,supplier:supplier,
-                        suppliername:suppliername,amount:amount,department1:department1,approvequoteid:approvequoteid,
+                        suppliername:suppliername,amount:amount,department1:department1,
+                        approvequoteid:$('#approvequoteid').val(),
                         userid:$('#userid').val(),department2:$('#department2').val()
                     },
                     success: function(result){
-                            alert(result);
+                          alert(result);
                         }}); 
                         
                         });
-                        $('#insert_form')[0].reset();
+
             });
         </script>
-    </form>       
+    
     </div>    
     </div>
     </main>
@@ -302,5 +324,8 @@
         <script src="js/datatables-simple-demo.js"></script>
 </body>
 </html>
+
+
+ 
 
 

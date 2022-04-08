@@ -97,7 +97,15 @@
               <form action = "" method = "post"> 
                   <div class="mb-3 col-md-12">
                    <label class="form-label">Supplier No</label>
-                      <input type="text" id = "supplierno" name = "supplierno" class="form-control" placeholder = "" value = "" readonly>
+                      <input type="text" id = "supplierno" name = "supplierno" class="form-control" placeholder = "" value = "<?php
+                       include('config.php');
+                       $sql = "select ('SUP' + cast(format(nextno,'00000') as varchar)) as supplierno from cplsupno"; 
+                       $stmt = sqlsrv_query($conn,$sql);
+                       while( $row = sqlsrv_fetch_array( $stmt, SQLSRV_FETCH_ASSOC)) {
+                               echo $row["supplierno"];
+                       }
+                       sqlsrv_close($conn); 
+                      ?>" readonly>
                   </div>
                    <div class="mb-3 col-md-12">
                       <input type="text" class="form-control" name= "suppliername"  placeholder = "Supplier Name" >
@@ -147,6 +155,7 @@
 include('config.php');
 if(isset($_POST['submit'])){
 
+ 
 $suppliername = $_POST['suppliername'] ?? '';
 $emailaddress = $_POST['emailaddress'] ?? '';
 $streetaddress = $_POST['streetaddress'] ?? '';
@@ -154,10 +163,21 @@ $country = $_POST['country'] ?? '';
 $city = $_POST['city'] ?? '';
 $telephone = $_POST['telephone'] ?? 0;
 
-$sql = "INSERT INTO cplsuppliers(suppliername,Telephone_no,email_address,streetaddress,city,country,created_on,modified_on)
-VALUES('$suppliername', '$emailaddress','$streetaddress','$country', '$city','$telephone', getdate(), getdate())";
+
+$sql = "
+DECLARE @sup as varchar(50)
+
+set @sup= (select ('SUP' + cast(format(nextno,'00000') as varchar)) from cplsupno);
+
+INSERT INTO cplsuppliers(suppliernumber,suppliername,Telephone_no,email_address,streetaddress,city,country,created_on,modified_on)
+VALUES(@sup,'$suppliername', '$emailaddress','$streetaddress','$country', '$city','$telephone', getdate(), getdate())";
 
 $stmt = sqlsrv_query($conn, $sql);
+
+$updatereqno="
+
+    update cplsupno set nextno=nextno+1 from cplsupno";
+    sqlsrv_query($conn, $updatereqno);
 
 if($stmt) {
   echo '<script language="javascript">';
