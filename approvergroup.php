@@ -1,11 +1,13 @@
 
 <?php
+session_start();
 include('phpfunctions.php');
 
 if(isset($_POST["submit"])) {
+foreach($_POST['selectusers'] as $key=> $value) {
     $groupname = $_POST['groupname'] ?? '';
     $selectdep = $_POST['selectdep'] ?? 0;
-    $selectusers = $_POST['selectusers'] ?? 0;
+    $selectusers = $_POST['selectusers'][$key];
     $role = $_POST['role'] ?? '';
     $createdon = $_POST['createdon'] ?? 0;
     $modifiedon = $_POST['modifiedon'] ?? 0;
@@ -15,7 +17,7 @@ if(isset($_POST["submit"])) {
     VALUES ('$selectusers', '$groupname', '$selectdep', '$role',getdate(), getdate())";
  
     $result = sqlsrv_query($conn, $sql3);
-    
+
 if($result) {
     echo '<script language="javascript">';
     echo 'alert("message successfully sent")';
@@ -23,6 +25,7 @@ if($result) {
   }else{
     die( print_r( sqlsrv_errors(), true));
   }
+}
 // print_r($selectusers);
 // print_r($groupname);
 // print_r($selectdep);
@@ -56,6 +59,8 @@ if($result) {
 <script type = "text/javascript">
      $(document).ready(function () {
         $('select').selectpicker();
+        $('select').selectpicker('refresh');
+        
     });
 
 </script>
@@ -67,9 +72,8 @@ if($result) {
             <button class="btn btn-link btn-sm order-1 order-lg-0 me-4 me-lg-0" id="sidebarToggle" href="#!"><i class="fas fa-bars"></i></button>
             <!-- Navbar Search-->
             <form class="d-none d-md-inline-block form-inline ms-auto me-0 me-md-3 my-2 my-md-0">
-                <div class="input-group">
-                    <input class="form-control" type="text" placeholder="Search for..." aria-label="Search for..." aria-describedby="btnNavbarSearch" />
-                    <button class="btn btn-primary" id="btnNavbarSearch" type="button"><i class="fas fa-search"></i></button>
+            <div class="input-group">
+                   <span class = 'text-light'>Welcome <?php echo $_SESSION['users'];?> !</span>
                 </div>
             </form>
             <!-- Navbar-->
@@ -78,18 +82,7 @@ if($result) {
                 <span class= "position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger">3</span>
                 </button>
             </div>
-
-            <ul class="navbar-nav ms-auto ms-md-0 me-2 me-lg-4">
-                <li class="nav-item dropdown">
-                    <a class="nav-link dropdown-toggle" id="navbarDropdown" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false"><i class="fas fa-user fa-fw"></i></a>
-                    <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="navbarDropdown">
-                        <li><a class="dropdown-item" href="#!">Settings</a></li>
-                        <li><a class="dropdown-item" href="#!">Activity Log</a></li>
-                        <li><hr class="dropdown-divider" /></li>
-                        <li><a class="dropdown-item" href="#!">Logout</a></li>
-                    </ul>
-                </li>
-            </ul>
+            <a href = "logout.php" class = "btn btn-primary mx-3" >LOG OUT</a>
 
         </nav>
 <div id="layoutSidenav">
@@ -98,7 +91,7 @@ if($result) {
             <div class="sb-sidenav-menu">
                 <div class="nav">
                     <div class="sb-sidenav-menu-heading">Core</div>
-                    <a class="nav-link" href="index.php">
+                    <a class="nav-link" href="home.php">
                         <div class="sb-nav-link-icon"><i class="fas fa-tachometer-alt"></i></div>
                         Dashboard
                     </a>
@@ -146,20 +139,45 @@ if($result) {
                                     </div>
                                     <div class = "mb-3">
                                         <label for=" " class="form-label">Select department:</label>
-                                            <select class = "select form-control" title = "Select department..." name = "selectdep">
-                                                <?php echo $option;?>
-                                            </select>
-                                    </div>
+                                         <?php
+                                        include('config.php');
+                                        $sql = "select * from cpldepartment";
+                                        $stmt = sqlsrv_query($conn, $sql);
+                                        if($stmt) {
+                                            echo "<select class ='form-control' title = 'Select Department' name = 'selectdep'>";
+                                            while($row = sqlsrv_fetch_array( $stmt, SQLSRV_FETCH_ASSOC) ) {
+                                            echo "<option value = " .$row["departmentId"] . "> " .$row["description"]."</option>";
+                                            }
+                                        echo "</select>";
+                                        }
+                                        sqlsrv_close($conn);
+                                        
+                                    ?>
+                                        </div>
                                     <div class = "mb-3">
                                         <label for=" " class="form-label">Select Users:</label>
-                                            <select class="selectpicker form-control" multiple title="Select Users..." name = "selectusers">
-                                                <?php echo $options; ?>
-                                            </select>
+                                        <?php
+                                        include('config.php');
+                                        $sql = "select * from cplusers";
+                                        $stmt = sqlsrv_query($conn, $sql);
+                                        if($stmt) {
+                                            echo "<select class ='selectpicker form-control' multiple title = 'Select User' name = 'selectusers[]'>";
+                                            while($row = sqlsrv_fetch_array( $stmt, SQLSRV_FETCH_ASSOC) ) {
+                                            echo "<option value = " .$row["userId"] . "> " .$row["username"]."</option>";
+                                            }
+                                        echo "</select>";
+                                        }
+                                        sqlsrv_close($conn);
+                                        ?>
                                     </div>
-                                    <div class="mb-3">
+                                    <div class = "mb-3">
                                         <label for=" " class="form-label">Role:</label>
-                                            <select>
-                                            
+                                            <select class="select form-control" title="Select Role..." name = "role">
+                                                <option>BSS Group</option>
+                                                <option>Training Group</option>
+                                                <option>Accounting Group</option>
+                                                <option>Sales Group</option>
+
                                             </select>
                                     </div>
                                 </div>

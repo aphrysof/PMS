@@ -1,15 +1,12 @@
 <?php
-session_start();
-include 'config.php';
-$sql = "select rs.ReqId, rn.ReqNumber,username, ct.description, rn.ReqDate, rs.ReqlineId, cl.status, case
-when cl.status = 0 then 'NOT APPROVED' when cl.status = 1 then 'APPROVED' when cl.status
-= 2 then 'REJECTED' end as action from Requsition rn
-join Requisitionlines rs on rs.ReqId = rn.ReqId  join cpldepartment ct
-on ct.departmentId = rn.departmentId join cplrequestapproval cl on cl.Reqlineid = rs.Reqlineid
-join cplusers cs on cs.userId = cl.userId where rn.userId = ".$_SESSION["userid"]."";
-
-$result = sqlsrv_query($conn, $sql);
-
+    session_start();
+    include 'config.php';
+    $sql = "select rs.ReqId, rn.ReqNumber, username, ct.description,rn.ReqDate, rs.ReqlineId , cl.approvalId ,cl.groupId, cl.userId
+    from cplrequestapproval cl join Requisitionlines rs
+    on rs.Reqlineid = cl.Reqlineid left join Requsition rn 
+    on rn.ReqId = rs.ReqId left join cplusers cs on cs.userId= rn.userId left join cpldepartment ct on ct.departmentId
+    = rn.departmentId where cl.userId = ".$_SESSION["userid"]." and cl.status <> 1";
+    $result = sqlsrv_query($conn, $sql);
 ?>
 <!DOCTYPE html>
 <html lang="en">
@@ -26,12 +23,12 @@ $result = sqlsrv_query($conn, $sql);
     <body class="sb-nav-fixed">
         <nav class="sb-topnav navbar navbar-expand navbar-dark bg-dark">
             <!-- Navbar Brand-->
-            <a class="navbar-brand ps-3" href="requestsent.php">PMS</a>
+            <a class="navbar-brand ps-3" href="#">PMS</a>
             <!-- Sidebar Toggle-->
             <button class="btn btn-link btn-sm order-1 order-lg-0 me-4 me-lg-0" id="sidebarToggle" href="#!"><i class="fas fa-bars"></i></button>
             <!-- Navbar Search-->
             <form class="d-none d-md-inline-block form-inline ms-auto me-0 me-md-3 my-2 my-md-0">
-            <div class="input-group">
+                <div class="input-group">
                    <span class = 'text-light'>Welcome <?php echo $_SESSION['users'];?> !</span>
                 </div>
             </form>
@@ -41,7 +38,7 @@ $result = sqlsrv_query($conn, $sql);
                 <span class= "position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger">3</span>
                 </button>
             </div>
-            <a href = "logout.php" class = "btn btn-primary mx-3" >LOG OUT</a>
+          <a href = "logout.php" class = "btn btn-primary mx-3" >LOG OUT</a>
         </nav>
         <div id="layoutSidenav">
             <div id="layoutSidenav_nav">
@@ -94,12 +91,12 @@ $result = sqlsrv_query($conn, $sql);
                                 Requests
                             </div>
                             <div class="card-body">
-                                <table id="datatablesSimple">
+                            <table class="table table-hover" id="datatablesSimple">
                                 <thead>
                                     <tr>
                                         <th scope="col">#</th>
                                         <th scope="col">Requisition Number</th>
-                                        <th scope="col">Approver</th>
+                                        <th scope="col">User</th>
                                         <th scope="col">Department</th>
                                         <th scope="col">Date</th>
                                         <th scope="col">Action</th>
@@ -116,16 +113,16 @@ $result = sqlsrv_query($conn, $sql);
                                         <td><?php echo $row['username']?></td>
                                         <td><?php echo $row['description']?></td>
                                         <td><?php echo $row['ReqDate']->format('d/m/Y')?></td>
-                                        <td><?php echo $row['action']?></td>
+                                        <td><a href = 'viewform.php?ReqId=<?php echo $row["ReqId"]; ?>'class = "btn btn-primary" >View</a></td>
                                     </tr>
                                     <?php } ?>
-
-                                </table>
+                            </table>    
                             </div>
                         </div>
                     </div>
                 </main>
             </div>
+           
         </div>
         <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js" crossorigin="anonymous"></script>
         <script src="js/scripts.js"></script>
@@ -133,3 +130,9 @@ $result = sqlsrv_query($conn, $sql);
         <script src="js/datatables-simple-demo.js"></script>
     </body>
 </html>
+<?php 
+include('config.php');
+
+
+
+?>

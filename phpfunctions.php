@@ -1,7 +1,5 @@
 <?php
 include('config.php');
-include 'connector.php';
-
 
 $sql = "select * from cpldepartment";
 $stmt = sqlsrv_query($conn,$sql);
@@ -30,9 +28,10 @@ function readdepartment() {
     $sql = "select * from cpldepartment";
     $stmt = sqlsrv_query($conn,$sql);
     if ($stmt) {
-        $select = '<select name="department1[]">';
+        $select = "<select>";
+        $select.='<option value = ""> "Select Department"</option>';
         while( $row = sqlsrv_fetch_array( $stmt, SQLSRV_FETCH_ASSOC) ) {
-            $select.='<option value="' . $row["departmentId"] . '">' . $row["description"] . '</option>';
+            $select.='<option value="' . $row["departmentId"] . '">'.$row["description"].'</option>';
         }
     }
     $select.="</select>";
@@ -43,7 +42,8 @@ function addquotation () {
     $sql = "select * from cplquotation";
     $stmt = sqlsrv_query($conn, $sql);
     if($stmt) {
-        $select = '<select name ="approvequoteid[]">';
+        $select = '<select>';
+        $select.='<option value = ""> "Select Quotation"</option>';
         while($row = sqlsrv_fetch_array($stmt, SQLSRV_FETCH_ASSOC)) {
             $select.='<option value = "' .$row["Quote_id"].'"> '.$row["Quote_no"].'</option>';
         }

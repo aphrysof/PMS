@@ -30,7 +30,7 @@ for($i = 0; $i < count($itemdescription); $i++) {
     $save = "
     --declare req and reqno as variables
     DECLARE @quote as varchar(50)
-    DECLARE @quote                 
+    DECLARE @quoteno as int          
     
     set @quote= (select ('QUOT' + cast(format(nextno,'00000') as varchar)) from cplquotedf);
 
